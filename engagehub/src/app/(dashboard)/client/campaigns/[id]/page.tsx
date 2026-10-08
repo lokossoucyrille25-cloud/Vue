@@ -1,17 +1,22 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 
-export default async function CampaignDetailsPage({ params }: { params: { id: string } }) {
+export default async function CampaignDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
   const supabase = await createClient();
 
-  const { data: campaign } = await supabase
+  const { data: campaign, error } = await supabase
     .from("campaigns")
     .select(`
       id, network, content_url, status, total_budget,
       campaign_actions ( id, action_type, target_quantity, unit_reward )
     `)
-    .eq("id", params.id)
+    .eq("id", resolvedParams.id)
     .single();
+
+  if (error) {
+    console.error("Campaign details fetch error:", error);
+  }
 
   if (!campaign) {
     return <div className="p-8 text-white">Campagne introuvable.</div>;
