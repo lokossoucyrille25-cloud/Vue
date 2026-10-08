@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "EngageHub",
+  title: "Boostify",
   description: "Plateforme d'engagement client (PWA SaaS)",
   manifest: "/manifest.json",
 };

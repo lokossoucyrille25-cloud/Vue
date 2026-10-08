@@ -69,7 +69,7 @@ export default function CreateCampaignPage() {
           action_type: actionType,
           target_quantity: quantity,
           unit_price: 10,
-          unit_reward: 8, // The engageur gets 8 FCFA, EngageHub keeps 2 FCFA
+          unit_reward: 8, // The engageur gets 8 FCFA, Boostify keeps 2 FCFA
           guidelines: instructions
         });
 

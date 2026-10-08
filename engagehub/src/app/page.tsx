@@ -33,7 +33,7 @@ export default async function Home() {
         <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white">
           Bienvenue sur <br />
           <span className="text-transparent bg-clip-text bg-gradient-insta">
-            EngageHub
+            Boostify
           </span>
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">

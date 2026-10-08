@@ -10,7 +10,7 @@ export default function HowItWorksPage() {
       <div className="max-w-6xl mx-auto p-6 lg:p-12">
         <header className="flex justify-between items-center mb-16">
           <Link href="/" className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-insta">
-            EngageHub
+            Boostify
           </Link>
           <div className="space-x-4">
             <Link href="/login"><Button variant="ghost" className="text-white">Connexion</Button></Link>

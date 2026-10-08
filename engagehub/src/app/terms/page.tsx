@@ -17,12 +17,12 @@ export default function TermsPage() {
         <div className="space-y-6">
           <section>
             <h2 className="text-2xl font-semibold mb-3">1. Acceptation des conditions</h2>
-            <p>En utilisant EngageHub, vous acceptez d'être lié par ces conditions d'utilisation. Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser notre plateforme.</p>
+            <p>En utilisant Boostify, vous acceptez d'être lié par ces conditions d'utilisation. Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser notre plateforme.</p>
           </section>
           
           <section>
             <h2 className="text-2xl font-semibold mb-3">2. Description du service</h2>
-            <p>EngageHub est une plateforme de mise en relation permettant aux créateurs (Clients) d'acheter de l'engagement (likes, vues, abonnements) réalisé par de vrais utilisateurs (Engageurs) contre une rémunération.</p>
+            <p>Boostify est une plateforme de mise en relation permettant aux créateurs (Clients) d'acheter de l'engagement (likes, vues, abonnements) réalisé par de vrais utilisateurs (Engageurs) contre une rémunération.</p>
           </section>
 
           <section>

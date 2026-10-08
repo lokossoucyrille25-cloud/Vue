@@ -7,7 +7,7 @@ export default function PricingPage() {
       <div className="max-w-5xl mx-auto p-6 lg:p-12">
         <header className="flex justify-between items-center mb-16">
           <Link href="/" className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-insta">
-            EngageHub
+            Boostify
           </Link>
           <Link href="/register"><Button className="bg-white/10 text-white hover:bg-white/20">S'inscrire</Button></Link>
         </header>

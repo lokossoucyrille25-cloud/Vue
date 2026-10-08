@@ -97,7 +97,7 @@ export default function RegisterPage() {
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-3xl font-bold">Créer un compte</CardTitle>
           <CardDescription className="text-muted-foreground">
-            Rejoignez EngageHub en tant que client ou engageur.
+            Rejoignez Boostify en tant que client ou engageur.
           </CardDescription>
         </CardHeader>
         <CardContent>

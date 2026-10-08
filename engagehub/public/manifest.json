@@ -1,6 +1,6 @@
 {
-  "name": "EngageHub",
-  "short_name": "EngageHub",
+  "name": "Boostify",
+  "short_name": "Boostify",
   "description": "Plateforme d'engagement",
   "start_url": "/",
   "display": "standalone",
