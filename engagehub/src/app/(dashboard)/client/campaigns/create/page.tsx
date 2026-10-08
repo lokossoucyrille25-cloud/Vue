@@ -38,15 +38,30 @@ export default function CreateCampaignPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Non authentifié");
 
-      const { data: clientProfile, error: profileError } = await supabase
+      // Ensure profiles and wallets exist just in case (fallback)
+      await supabase.from('profiles').upsert({ id: user.id, roles: ['client'] });
+      await supabase.from('wallets').upsert({ user_id: user.id, available_balance: 0 });
+
+      let { data: clientProfile, error: profileError } = await supabase
         .from('client_profiles')
         .select('id')
         .eq('client_id', user.id)
-        .single();
+        .maybeSingle();
         
-      if (profileError || !clientProfile) {
+      if (profileError) {
         console.error("Profile Error Details:", profileError);
-        throw new Error(`Profil client introuvable: ${profileError?.message || 'Inconnu'}`);
+        throw new Error(`Erreur lors de la lecture du profil: ${profileError.message}`);
+      }
+      
+      if (!clientProfile) {
+        const { data: newProfile, error: createError } = await supabase
+          .from('client_profiles')
+          .insert({ client_id: user.id, public_name: 'Mon compte Client' })
+          .select('id')
+          .single();
+          
+        if (createError) throw new Error("Impossible de créer le profil client: " + createError.message);
+        clientProfile = newProfile;
       }
 
       // 1. Create Campaign
