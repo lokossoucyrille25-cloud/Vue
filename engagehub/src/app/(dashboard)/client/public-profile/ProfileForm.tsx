@@ -14,12 +14,12 @@ export function ProfileForm({ profile }: { profile: any }) {
     setLoading(true);
     try {
       await updateProfile(formData);
-      toast({
+      toast.add({
         title: "Profil validé",
         description: "Votre profil a été mis à jour et sauvegardé avec succès.",
       });
     } catch (error) {
-      toast({
+      toast.add({
         title: "Erreur",
         description: "Une erreur est survenue lors de la mise à jour.",
       });
@@ -30,7 +30,7 @@ export function ProfileForm({ profile }: { profile: any }) {
 
   function handleCheckboxChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.checked) {
-      toast({
+      toast.add({
         title: "Visibilité activée",
         description: "Votre profil sera visible par les engageurs après l'enregistrement.",
       });
