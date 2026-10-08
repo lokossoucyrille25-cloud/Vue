@@ -7,8 +7,8 @@ export default async function CampaignDetailsPage({ params }: { params: { id: st
   const { data: campaign } = await supabase
     .from("campaigns")
     .select(`
-      id, title, network, content_url, status, total_budget,
-      campaign_actions ( id, action_type, quantity, unit_reward )
+      id, network, content_url, status, total_budget,
+      campaign_actions ( id, action_type, target_quantity, unit_reward )
     `)
     .eq("id", params.id)
     .single();
@@ -26,7 +26,7 @@ export default async function CampaignDetailsPage({ params }: { params: { id: st
 
       <Card className="bg-card/50 border-white/10 backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="text-xl text-white">{campaign.title}</CardTitle>
+          <CardTitle className="text-xl text-white capitalize">Campagne {campaign.network}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4 text-white">
           <p><strong>Réseau:</strong> <span className="capitalize">{campaign.network}</span></p>
@@ -39,7 +39,7 @@ export default async function CampaignDetailsPage({ params }: { params: { id: st
             {campaign.campaign_actions?.map((action: any) => (
               <div key={action.id} className="p-3 bg-white/5 border border-white/10 rounded flex justify-between">
                 <span className="capitalize">{action.action_type}</span>
-                <span>{action.quantity} demandés - {action.unit_reward} FCFA / action</span>
+                <span>{action.target_quantity} demandés - {action.unit_reward} FCFA / action</span>
               </div>
             ))}
           </div>
