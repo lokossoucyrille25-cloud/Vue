@@ -140,6 +140,38 @@ create table disputes (
 alter table profiles enable row level security;
 create policy "Public profiles are viewable by everyone" on profiles for select using (true);
 create policy "Users can update own profile" on profiles for update using (auth.uid() = id);
+create policy "Users can insert own profile" on profiles for insert with check (auth.uid() = id);
 
 alter table wallets enable row level security;
 create policy "Users can view own wallet" on wallets for select using (auth.uid() = user_id);
+create policy "Users can insert own wallet" on wallets for insert with check (auth.uid() = user_id);
+
+-- Trigger for auto-creating profiles on signup
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  insert into public.profiles (id, roles)
+  values (new.id, array[coalesce((new.raw_user_meta_data->>'role'), 'engageur')]);
+
+  insert into public.wallets (user_id, available_balance)
+  values (new.id, 0);
+
+  if (new.raw_user_meta_data->>'role' = 'client') then
+    insert into public.client_profiles (client_id, public_name)
+    values (new.id, coalesce((new.raw_user_meta_data->>'full_name'), 'Nouveau Client'));
+  else
+    insert into public.social_accounts (user_id, network, username)
+    values (new.id, 'tiktok', coalesce((new.raw_user_meta_data->>'full_name'), 'Nouveau Engageur'));
+  end if;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_user();
