@@ -44,7 +44,10 @@ export default function CreateCampaignPage() {
         .eq('client_id', user.id)
         .single();
         
-      if (profileError || !clientProfile) throw new Error("Profil client introuvable");
+      if (profileError || !clientProfile) {
+        console.error("Profile Error Details:", profileError);
+        throw new Error(`Profil client introuvable: ${profileError?.message || 'Inconnu'}`);
+      }
 
       // 1. Create Campaign
       const { data: campaign, error: campaignError } = await supabase
