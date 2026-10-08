@@ -70,7 +70,7 @@ export default function CreateCampaignPage() {
       const { data: campaign, error: campaignError } = await supabase
         .from('campaigns')
         .insert({
-          client_id: clientProfile.id,
+          client_id: user.id, // Must be user.id to pass RLS policy (auth.uid() = client_id)
           network: platform,
           content_url: url,
           total_budget: estimatedPrice,
@@ -79,7 +79,10 @@ export default function CreateCampaignPage() {
         .select()
         .single();
 
-      if (campaignError) throw campaignError;
+      if (campaignError) {
+        console.error("Campaign creation error:", campaignError);
+        throw new Error("Erreur lors de la création de la campagne: " + campaignError.message);
+      }
 
       // 2. Create Campaign Action
       const { error: actionError } = await supabase
