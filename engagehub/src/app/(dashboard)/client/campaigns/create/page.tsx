@@ -42,16 +42,18 @@ export default function CreateCampaignPage() {
       await supabase.from('profiles').upsert({ id: user.id, roles: ['client'] });
       await supabase.from('wallets').upsert({ user_id: user.id, available_balance: 0 });
 
-      let { data: clientProfile, error: profileError } = await supabase
+      let { data: clientProfiles, error: profileError } = await supabase
         .from('client_profiles')
         .select('id')
         .eq('client_id', user.id)
-        .maybeSingle();
+        .limit(1);
         
       if (profileError) {
         console.error("Profile Error Details:", profileError);
         throw new Error(`Erreur lors de la lecture du profil: ${profileError.message}`);
       }
+      
+      let clientProfile = clientProfiles?.[0];
       
       if (!clientProfile) {
         const { data: newProfile, error: createError } = await supabase
