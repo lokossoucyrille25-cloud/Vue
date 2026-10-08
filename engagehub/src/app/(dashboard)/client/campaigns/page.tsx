@@ -9,28 +9,20 @@ export default async function ClientCampaignsPage() {
 
   let campaigns: any[] = [];
   if (user) {
-    const { data: clientProfile } = await supabase
-      .from("client_profiles")
-      .select("id")
+    const { data } = await supabase
+      .from("campaigns")
+      .select(`
+        id, 
+        network, 
+        status, 
+        created_at, 
+        total_budget,
+        campaign_actions ( target_quantity, completed_quantity, action_type )
+      `)
       .eq("client_id", user.id)
-      .single();
+      .order("created_at", { ascending: false });
 
-    if (clientProfile) {
-      const { data } = await supabase
-        .from("campaigns")
-        .select(`
-          id, 
-          network, 
-          status, 
-          created_at, 
-          total_budget,
-          campaign_actions ( target_quantity, completed_quantity, action_type )
-        `)
-        .eq("client_id", clientProfile.id)
-        .order("created_at", { ascending: false });
-
-      if (data) campaigns = data;
-    }
+    if (data) campaigns = data;
   }
 
   return (
