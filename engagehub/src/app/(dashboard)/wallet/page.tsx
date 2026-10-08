@@ -15,6 +15,8 @@ export default async function WalletPage() {
     .select("*")
     .eq("user_id", user.id)
     .single();
+    
+  const role = user.user_metadata?.role || "engageur";
 
   // Fetch transactions
   let transactions: any[] = [];
@@ -54,9 +56,11 @@ export default async function WalletPage() {
                   Recharger
                 </Button>
               </Link>
-              <Button variant="outline" className="flex-1 border-white/20 hover:bg-white/10 text-white">
-                Retirer
-              </Button>
+              {role !== "client" && (
+                <Button variant="outline" className="flex-1 border-white/20 hover:bg-white/10 text-white">
+                  Retirer
+                </Button>
+              )}
             </div>
           </CardContent>
         </Card>
