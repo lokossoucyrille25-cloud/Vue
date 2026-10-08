@@ -175,3 +175,19 @@ drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
+
+-- Additional RLS Policies for missing tables
+alter table client_profiles enable row level security;
+create policy "Users can view own client profile" on client_profiles for select using (auth.uid() = client_id);
+create policy "Users can update own client profile" on client_profiles for update using (auth.uid() = client_id);
+create policy "Users can insert own client profile" on client_profiles for insert with check (auth.uid() = client_id);
+
+alter table campaigns enable row level security;
+create policy "Users can view own campaigns" on campaigns for select using (auth.uid() = client_id);
+create policy "Users can insert own campaigns" on campaigns for insert with check (auth.uid() = client_id);
+create policy "Users can update own campaigns" on campaigns for update using (auth.uid() = client_id);
+
+alter table campaign_actions enable row level security;
+create policy "Users can view own campaign actions" on campaign_actions for select using (true);
+create policy "Users can insert own campaign actions" on campaign_actions for insert with check (true);
+create policy "Users can update own campaign actions" on campaign_actions for update using (true);
