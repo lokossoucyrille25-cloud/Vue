@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
+import { ProofActions } from "./ProofActions";
 
 export default async function AdminProofsPage() {
   const supabase = await createClient();
@@ -51,10 +52,7 @@ export default async function AdminProofsPage() {
                     </span>
                   </td>
                   <td className="p-4 text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button size="sm" variant="outline" className="border-green-500/50 text-green-400 hover:bg-green-500/10">Valider</Button>
-                      <Button size="sm" variant="outline" className="border-red-500/50 text-red-400 hover:bg-red-500/10">Rejeter</Button>
-                    </div>
+                    <ProofActions proofId={proof.id} currentStatus={proof.status} />
                   </td>
                 </tr>
               ))

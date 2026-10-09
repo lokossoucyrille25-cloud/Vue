@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
+import { UserActions } from "./UserActions";
 
 export default async function AdminUsersPage() {
   const supabase = await createClient();
@@ -25,12 +26,13 @@ export default async function AdminUsersPage() {
               <th className="p-4 text-sm font-medium text-muted-foreground">Confiance</th>
               <th className="p-4 text-sm font-medium text-muted-foreground">Date Inscription</th>
               <th className="p-4 text-sm font-medium text-muted-foreground">Statut</th>
+              <th className="p-4 text-sm font-medium text-muted-foreground text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">
             {!users || users.length === 0 ? (
               <tr>
-                <td colSpan={5} className="p-8 text-center text-muted-foreground">Aucun utilisateur trouvé.</td>
+                <td colSpan={6} className="p-8 text-center text-muted-foreground">Aucun utilisateur trouvé.</td>
               </tr>
             ) : (
               users.map((u) => (
@@ -47,6 +49,9 @@ export default async function AdminUsersPage() {
                     <span className={`px-2 py-1 text-xs rounded capitalize ${u.status === 'active' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
                       {u.status}
                     </span>
+                  </td>
+                  <td className="p-4 text-right">
+                    <UserActions userId={u.id} currentStatus={u.status} />
                   </td>
                 </tr>
               ))
