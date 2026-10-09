@@ -21,6 +21,7 @@ create table profiles (
   roles text[] default '{"engageur"}', -- array of roles: client, engageur, admin
   trust_level text default 'nouveau', -- nouveau, fiable, expert
   status text default 'active',
+  settings jsonb default '{"email_notifs":true,"push_notifs":false,"marketing_notifs":false,"theme":"dark","language":"fr"}'::jsonb,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
