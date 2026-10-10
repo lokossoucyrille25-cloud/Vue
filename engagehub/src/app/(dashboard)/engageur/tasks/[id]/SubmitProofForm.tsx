@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { submitProof, cancelTask } from "../actions";
+import { submitProof, cancelTask } from "../../actions";
 import { createClient } from "@/lib/supabase/client";
 
 export function SubmitProofForm({ taskId }: { taskId: string }) {

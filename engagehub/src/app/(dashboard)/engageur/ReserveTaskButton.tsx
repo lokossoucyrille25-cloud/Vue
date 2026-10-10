@@ -15,6 +15,10 @@ export function ReserveTaskButton({
 }) {
   const [isPending, startTransition] = useTransition();
 
+  const formattedUrl = contentUrl.startsWith('http') 
+    ? contentUrl 
+    : `https://${contentUrl}`;
+
   return (
     <Button 
       asChild
@@ -22,7 +26,7 @@ export function ReserveTaskButton({
       className={`w-full bg-white/10 hover:bg-white/20 text-white border border-white/5 ${isPending ? 'opacity-50 pointer-events-none' : ''}`}
     >
       <a
-        href={contentUrl}
+        href={formattedUrl}
         target="_blank"
         rel="noopener noreferrer"
         onClick={(e) => {
