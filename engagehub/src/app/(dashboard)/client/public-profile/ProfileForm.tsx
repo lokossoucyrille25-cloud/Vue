@@ -6,13 +6,34 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toast";
 import { updateProfile } from "./actions";
+import { createClient } from "@/lib/supabase/client";
 
 export function ProfileForm({ profile }: { profile: any }) {
   const [loading, setLoading] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
 
-  async function handleSubmit(formData: FormData) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     setLoading(true);
+    
     try {
+      const formData = new FormData(e.currentTarget);
+      
+      if (file) {
+        const supabase = createClient();
+        const fileExt = file.name.split('.').pop();
+        const filePath = `${profile?.client_id || Date.now()}-${Date.now()}.${fileExt}`;
+        
+        const { data, error: uploadError } = await supabase.storage
+          .from("avatars")
+          .upload(filePath, file);
+          
+        if (!uploadError) {
+          const { data: { publicUrl } } = supabase.storage.from("avatars").getPublicUrl(filePath);
+          formData.set("avatar_url", publicUrl);
+        }
+      }
+
       await updateProfile(formData);
       toast.add({
         title: "Profil validé",
@@ -38,7 +59,21 @@ export function ProfileForm({ profile }: { profile: any }) {
   }
 
   return (
-    <form action={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="flex items-center gap-4">
+        {profile?.avatar_url && (
+          <img src={profile.avatar_url} alt="Avatar" className="w-16 h-16 rounded-full object-cover border border-white/10" />
+        )}
+        <div className="space-y-3 flex-1">
+          <label className="text-sm font-medium text-white/90">Photo de profil / Logo (Optionnel)</label>
+          <Input 
+            type="file"
+            accept="image/*"
+            onChange={(e) => setFile(e.target.files?.[0] || null)}
+            className="bg-white/5 border-white/10 text-white cursor-pointer"
+          />
+        </div>
+      </div>
       <div className="space-y-3">
         <label className="text-sm font-medium text-white/90">Nom Public / Nom de Marque</label>
         <Input 

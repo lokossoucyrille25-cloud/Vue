@@ -57,9 +57,11 @@ export default async function WalletPage() {
                 </Button>
               </Link>
               {role !== "client" && (
-                <Button variant="outline" className="flex-1 border-white/20 hover:bg-white/10 text-white">
-                  Retirer
-                </Button>
+                <Link href="/wallet/withdraw" className="flex-1">
+                  <Button variant="outline" className="w-full border-white/20 hover:bg-white/10 text-white">
+                    Retirer
+                  </Button>
+                </Link>
               )}
             </div>
           </CardContent>

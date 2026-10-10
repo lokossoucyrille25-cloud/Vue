@@ -66,6 +66,17 @@ export default function CreateCampaignPage() {
         clientProfile = newProfile;
       }
 
+      // Verify wallet balance
+      const { data: wallet } = await supabase
+        .from('wallets')
+        .select('id, available_balance, escrow_balance')
+        .eq('user_id', user.id)
+        .single();
+
+      if (!wallet || wallet.available_balance < estimatedPrice) {
+        throw new Error("Solde insuffisant. Veuillez recharger votre portefeuille.");
+      }
+
       // 1. Create Campaign
       const { data: campaign, error: campaignError } = await supabase
         .from('campaigns')
@@ -85,34 +96,40 @@ export default function CreateCampaignPage() {
       }
 
       // 2. Create Campaign Action
+      const unitPrice = 10;
+      const unitReward = 8;
+      
       const { error: actionError } = await supabase
         .from('campaign_actions')
         .insert({
           campaign_id: campaign.id,
           action_type: actionType,
           target_quantity: quantity,
-          unit_price: 10,
-          unit_reward: 8, // The engageur gets 8 FCFA, Boostify keeps 2 FCFA
+          unit_price: unitPrice,
+          unit_reward: unitReward,
           guidelines: instructions
         });
 
       if (actionError) throw actionError;
 
-      // Deduct from wallet (simplified for MVP)
-      const { data: wallet } = await supabase
+      // 3. Deduct from wallet and move to escrow
+      await supabase
         .from('wallets')
-        .select('available_balance, escrow_balance')
-        .eq('user_id', user.id)
-        .single();
+        .update({
+          available_balance: wallet.available_balance - estimatedPrice,
+          escrow_balance: wallet.escrow_balance + estimatedPrice
+        })
+        .eq('user_id', user.id);
 
-      if (wallet) {
-        await supabase
-          .from('wallets')
-          .update({
-            available_balance: wallet.available_balance - estimatedPrice,
-            escrow_balance: wallet.escrow_balance + estimatedPrice
-          })
-          .eq('user_id', user.id);
+      // 4. Record platform commission immediately (quantity * (unitPrice - unitReward))
+      const totalCommission = quantity * (unitPrice - unitReward);
+      if (totalCommission > 0) {
+        await supabase.from("transactions").insert({
+          wallet_id: wallet.id,
+          amount: totalCommission,
+          type: "commission",
+          status: "completed"
+        });
       }
 
       router.push("/client/campaigns");

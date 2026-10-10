@@ -24,8 +24,8 @@ export function Sidebar({ profile }: { profile: any }) {
     <aside className="w-64 border-r border-white/10 bg-card hidden md:flex flex-col h-full sticky top-0">
       <div className="h-16 flex items-center px-6 border-b border-white/10">
         <h1 className="text-xl font-bold flex items-center gap-2">
-          <span className="text-brand-tiktok-cyan glow-tiktok-cyan">Engage</span>
-          <span className="text-brand-tiktok-pink glow-tiktok-pink">Hub</span>
+          <span className="text-brand-tiktok-cyan glow-tiktok-cyan">Boost</span>
+          <span className="text-brand-tiktok-pink glow-tiktok-pink">ify</span>
         </h1>
       </div>
       
@@ -46,6 +46,11 @@ export function Sidebar({ profile }: { profile: any }) {
             <Link href="/client/public-profile">
               <Button variant="ghost" className={`w-full justify-start ${isActive('/client/public-profile') ? 'bg-white/10 text-white' : 'text-muted-foreground hover:text-white hover:bg-white/5'}`}>
                 <Users className="mr-2 h-4 w-4" /> Profil Public
+              </Button>
+            </Link>
+            <Link href="/client/directory">
+              <Button variant="ghost" className={`w-full justify-start ${isActive('/client/directory') ? 'bg-white/10 text-white' : 'text-muted-foreground hover:text-white hover:bg-white/5'}`}>
+                <Users className="mr-2 h-4 w-4" /> Annuaire Engageurs
               </Button>
             </Link>
           </>

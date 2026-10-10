@@ -47,7 +47,12 @@ export default async function AdminProofsPage() {
                   </td>
                   <td className="p-4 text-muted-foreground">{new Date(proof.created_at).toLocaleDateString()}</td>
                   <td className="p-4">
-                    <span className={`px-2 py-1 text-xs rounded capitalize ${proof.status === 'accepted' ? 'bg-green-500/20 text-green-400' : proof.status === 'rejected' ? 'bg-red-500/20 text-red-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
+                    <span className={`px-2 py-1 text-xs rounded capitalize ${
+                      proof.status === 'accepted' ? 'bg-green-500/20 text-green-400' : 
+                      proof.status === 'rejected' ? 'bg-red-500/20 text-red-400' : 
+                      proof.status === 'disputed' ? 'bg-orange-500/20 text-orange-400 font-bold border border-orange-500/50' : 
+                      'bg-yellow-500/20 text-yellow-400'
+                    }`}>
                       {proof.status}
                     </span>
                   </td>

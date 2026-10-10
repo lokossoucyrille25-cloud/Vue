@@ -2,6 +2,7 @@
 
 import { Bell, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { NotificationBell } from "./NotificationBell";
 
 export function Header({ profile, wallet }: { profile: any, wallet: any }) {
   const isClient = profile?.roles?.includes('client');
@@ -20,9 +21,7 @@ export function Header({ profile, wallet }: { profile: any, wallet: any }) {
           </span>
         </div>
         
-        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-white rounded-full">
-          <Bell className="h-5 w-5" />
-        </Button>
+        <NotificationBell userId={profile?.id} />
         <div className="w-8 h-8 rounded-full bg-gradient-insta border border-white/20 overflow-hidden flex items-center justify-center text-xs font-bold text-white uppercase">
           {profile?.phone ? profile.phone.substring(0, 2) : "US"}
         </div>

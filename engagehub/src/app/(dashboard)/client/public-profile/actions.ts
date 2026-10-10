@@ -14,6 +14,7 @@ export async function updateProfile(formData: FormData) {
   const public_name = formData.get("public_name") as string;
   const description = formData.get("description") as string;
   const is_visible = formData.get("is_visible") === "on";
+  const avatar_url = formData.get("avatar_url") as string;
 
   const { data: existingProfile } = await supabase
     .from("client_profiles")
@@ -22,14 +23,17 @@ export async function updateProfile(formData: FormData) {
     .single();
 
   if (existingProfile) {
+    const updateData: any = { public_name, description, is_visible };
+    if (avatar_url) updateData.avatar_url = avatar_url;
+
     await supabase
       .from("client_profiles")
-      .update({ public_name, description, is_visible })
+      .update(updateData)
       .eq("client_id", user.id);
   } else {
     await supabase
       .from("client_profiles")
-      .insert({ client_id: user.id, public_name, description, is_visible });
+      .insert({ client_id: user.id, public_name, description, is_visible, avatar_url });
   }
   
   revalidatePath("/client/public-profile");

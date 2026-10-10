@@ -1,8 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { reserveTask, cleanExpiredTasks } from "./actions";
 
 export default async function EngageurDashboard() {
+  // Nettoyage lazy des tâches réservées depuis plus de 24h
+  await cleanExpiredTasks();
+
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -19,7 +23,7 @@ export default async function EngageurDashboard() {
   // For the MVP, we just fetch the latest active campaigns to display
   const { data: activeCampaigns } = await supabase
     .from("campaigns")
-    .select("id, network, content_url, total_budget, status")
+    .select("id, network, content_url, total_budget, status, campaign_actions(id, action_type, unit_reward)")
     .eq("status", "active")
     .order("created_at", { ascending: false })
     .limit(10);
@@ -80,25 +84,39 @@ export default async function EngageurDashboard() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {activeCampaigns.map((camp) => (
-              <Card key={camp.id} className="bg-card/50 border-white/10 flex flex-col justify-between hover:border-brand-tiktok-cyan/50 transition-colors">
-                <CardHeader className="pb-2">
-                  <div className="flex items-center justify-between">
-                    <span className="bg-white/10 px-2 py-1 rounded text-xs font-medium text-white capitalize">{camp.network}</span>
-                    <span className="font-bold text-gradient-insta text-lg">Action à voir</span>
+            {activeCampaigns.map((camp) => {
+              const action = camp.campaign_actions?.[0]; // Get the first action
+              return (
+                <Card key={camp.id} className="bg-card/50 border-white/10 flex flex-col justify-between hover:border-brand-tiktok-cyan/50 transition-colors">
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center justify-between">
+                      <span className="bg-white/10 px-2 py-1 rounded text-xs font-medium text-white capitalize">{camp.network}</span>
+                      <span className="font-bold text-gradient-insta text-lg">{action ? `${action.unit_reward} FCFA` : 'Action à voir'}</span>
+                    </div>
+                    <CardTitle className="text-base text-white mt-2 truncate">{camp.content_url}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {action ? `Action: ${action.action_type}` : "Campagne active nécessitant de l'engagement."}
+                    </p>
+                  </CardContent>
+                  <div className="p-6 pt-0 mt-auto">
+                    {action ? (
+                      <form action={reserveTask}>
+                        <input type="hidden" name="campaignActionId" value={action.id} />
+                        <Button type="submit" className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/5">
+                          Réaliser
+                        </Button>
+                      </form>
+                    ) : (
+                      <Button disabled className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/5">
+                        Aucune action
+                      </Button>
+                    )}
                   </div>
-                  <CardTitle className="text-base text-white mt-2 truncate">{camp.content_url}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground line-clamp-2">Campagne active nécessitant de l'engagement.</p>
-                </CardContent>
-                <div className="p-6 pt-0 mt-auto">
-                  <Button className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/5">
-                    Réaliser
-                  </Button>
-                </div>
-              </Card>
-            ))}
+                </Card>
+              );
+            })}
           </div>
         )}
       </div>

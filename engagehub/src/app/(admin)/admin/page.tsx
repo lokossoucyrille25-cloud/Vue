@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
+import { WithdrawApproveButton } from "./WithdrawApproveButton";
 
 export default async function AdminDashboard() {
   const supabase = await createClient();
@@ -100,6 +101,14 @@ export default async function AdminDashboard() {
         <Card className="bg-card/50 border-white/10 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="text-lg text-white">Demandes de retrait</CardTitle>
+            <div className="flex gap-4">
+              <a href="/admin/withdrawals" className="text-xs text-brand-tiktok-cyan hover:underline">
+                Gérer les retraits
+              </a>
+              <a href="/admin/deposits" className="text-xs text-brand-tiktok-pink hover:underline">
+                Valider les dépôts manuels
+              </a>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -112,9 +121,7 @@ export default async function AdminDashboard() {
                       <p className="text-sm font-medium text-white">Retrait #{w.id.substring(0,6)}</p>
                       <p className="text-xs text-muted-foreground mt-1">Demande: {w.amount} FCFA</p>
                     </div>
-                    <Button size="sm" className="bg-white/10 text-white hover:bg-white/20">
-                      Approuver
-                    </Button>
+                    <WithdrawApproveButton transactionId={w.id} />
                   </div>
                 ))
               )}

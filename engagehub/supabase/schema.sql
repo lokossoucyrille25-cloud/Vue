@@ -137,6 +137,17 @@ create table disputes (
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
+-- 12. Notifications
+create table notifications (
+  id uuid default uuid_generate_v4() primary key,
+  user_id uuid references profiles(id) on delete cascade not null,
+  title text not null,
+  message text not null,
+  is_read boolean default false,
+  link text,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
 -- Row Level Security (RLS) setup (Basic Examples)
 alter table profiles enable row level security;
 create policy "Public profiles are viewable by everyone" on profiles for select using (true);
@@ -192,3 +203,12 @@ alter table campaign_actions enable row level security;
 create policy "Users can view own campaign actions" on campaign_actions for select using (true);
 create policy "Users can insert own campaign actions" on campaign_actions for insert with check (true);
 create policy "Users can update own campaign actions" on campaign_actions for update using (true);
+
+alter table notifications enable row level security;
+create policy "Users can view own notifications" on notifications for select using (auth.uid() = user_id);
+create policy "Users can update own notifications" on notifications for update using (auth.uid() = user_id);
+create policy "Users can insert own notifications" on notifications for insert with check (auth.uid() = user_id);
+create policy "Admins can insert notifications" on notifications for insert with check ( exists (select 1 from profiles where id = auth.uid() and 'admin' = any(roles)) );
+
+-- Enable realtime for notifications
+alter publication supabase_realtime add table notifications;

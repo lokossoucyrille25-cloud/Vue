@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
+import { WithdrawApproveButton } from "../WithdrawApproveButton";
 
 export default async function AdminFinancesPage() {
   const supabase = await createClient();
@@ -49,7 +50,10 @@ export default async function AdminFinancesPage() {
                   <td className="p-4 text-right">
                     {tx.type === 'withdrawal' && tx.status === 'pending' ? (
                       <div className="flex justify-end gap-2">
-                        <Button size="sm" variant="outline" className="border-green-500/50 text-green-400 hover:bg-green-500/10">Approuver</Button>
+                        <WithdrawApproveButton 
+                          transactionId={tx.id} 
+                          className="border-green-500/50 text-green-400 hover:bg-green-500/10" 
+                        />
                       </div>
                     ) : (
                       <span className="text-xs text-muted-foreground">-</span>

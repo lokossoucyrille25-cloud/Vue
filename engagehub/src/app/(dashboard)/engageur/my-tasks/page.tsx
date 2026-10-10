@@ -101,13 +101,17 @@ export default async function MyTasksPage() {
                     </td>
                     <td className="p-4 text-right">
                       {task.status === 'reserved' ? (
-                        <Button size="sm" className="bg-white text-black hover:bg-white/90">
-                          Soumettre preuve
-                        </Button>
+                        <Link href={`/engageur/tasks/${task.id}`}>
+                          <Button size="sm" className="bg-white text-black hover:bg-white/90">
+                            Soumettre preuve
+                          </Button>
+                        </Link>
                       ) : (
-                        <Button size="sm" variant="outline" className="border-white/10 text-white">
-                          Détails
-                        </Button>
+                        <Link href={`/engageur/tasks/${task.id}`}>
+                          <Button size="sm" variant="outline" className="border-white/10 text-white">
+                            Détails
+                          </Button>
+                        </Link>
                       )}
                     </td>
                   </tr>

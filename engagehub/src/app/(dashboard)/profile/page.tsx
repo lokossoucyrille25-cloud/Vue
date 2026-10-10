@@ -18,11 +18,14 @@ export default async function ProfilePage() {
 
   async function updateProfile(formData: FormData) {
     "use server";
+    const phone = formData.get("phone") as string;
+    
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
     
-    // Simplification for now
+    await supabase.from("profiles").update({ phone }).eq("id", user.id);
+    
     revalidatePath("/profile");
   }
 

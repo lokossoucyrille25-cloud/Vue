@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
+import { SubmitProofForm } from "./SubmitProofForm";
 
 export default async function TaskDetailsPage({ params }: { params: { id: string } }) {
   const supabase = await createClient();
@@ -43,6 +44,15 @@ export default async function TaskDetailsPage({ params }: { params: { id: string
             <h4 className="font-bold mb-2">Instructions:</h4>
             <p className="text-muted-foreground">{action?.instructions || 'Suivez les instructions standards pour cette plateforme.'}</p>
           </div>
+          
+          {task.status === 'reserved' && (
+            <SubmitProofForm taskId={task.id} />
+          )}
+          {task.status !== 'reserved' && (
+            <div className="p-4 bg-white/5 rounded-md mt-4 border border-white/10 text-center text-muted-foreground">
+              Cette tâche est au statut : <span className="capitalize text-white">{task.status.replace('_', ' ')}</span>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
