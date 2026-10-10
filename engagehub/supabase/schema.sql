@@ -196,6 +196,7 @@ create policy "Users can insert own client profile" on client_profiles for inser
 
 alter table campaigns enable row level security;
 create policy "Users can view own campaigns" on campaigns for select using (auth.uid() = client_id);
+create policy "Everyone can view campaigns" on campaigns for select using (true);
 create policy "Users can insert own campaigns" on campaigns for insert with check (auth.uid() = client_id);
 create policy "Users can update own campaigns" on campaigns for update using (auth.uid() = client_id);
 
