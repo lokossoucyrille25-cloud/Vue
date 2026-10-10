@@ -15,25 +15,31 @@ export function ReserveTaskButton({
 }) {
   const [isPending, startTransition] = useTransition();
 
-  const handleClick = () => {
-    // Ouvre le lien dans un nouvel onglet
-    window.open(contentUrl, "_blank", "noopener,noreferrer");
-    
-    // Lance l'action serveur en arrière-plan
-    startTransition(async () => {
-      const formData = new FormData();
-      formData.append("campaignActionId", actionId);
-      await reserveTask(formData);
-    });
-  };
-
   return (
     <Button 
-      onClick={handleClick}
+      asChild
       disabled={isPending}
-      className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/5"
+      className={`w-full bg-white/10 hover:bg-white/20 text-white border border-white/5 ${isPending ? 'opacity-50 pointer-events-none' : ''}`}
     >
-      {isPending ? "Réservation..." : "Réaliser"}
+      <a
+        href={contentUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={(e) => {
+          if (isPending) {
+            e.preventDefault();
+            return;
+          }
+          
+          startTransition(async () => {
+            const formData = new FormData();
+            formData.append("campaignActionId", actionId);
+            await reserveTask(formData);
+          });
+        }}
+      >
+        {isPending ? "Réservation..." : "Réaliser"}
+      </a>
     </Button>
   );
 }
