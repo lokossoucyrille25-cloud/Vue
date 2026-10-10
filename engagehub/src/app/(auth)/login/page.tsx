@@ -41,7 +41,8 @@ export default function LoginPage() {
         router.push(isClient ? "/client" : "/engageur");
       }
     } catch (err: any) {
-      setError(err.message || "Identifiants incorrects.");
+      const msg = err.message === "Invalid login credentials" ? "Identifiants incorrects." : err.message;
+      setError(msg || "Erreur de connexion.");
     } finally {
       setLoading(false);
     }

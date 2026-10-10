@@ -3,6 +3,9 @@
 import { Button } from "@/components/ui/button";
 import { reserveTask } from "./actions";
 
+import { useTransition } from "react";
+import { useRouter } from "next/navigation";
+
 export function ReserveTaskButton({ 
   actionId, 
   contentUrl 
@@ -10,18 +13,27 @@ export function ReserveTaskButton({
   actionId: string; 
   contentUrl: string; 
 }) {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    // Open the content URL in a new tab immediately
+  const [isPending, startTransition] = useTransition();
+
+  const handleClick = () => {
+    // Ouvre le lien dans un nouvel onglet
     window.open(contentUrl, "_blank", "noopener,noreferrer");
-    // Let the form submit naturally to trigger the server action (reserves and redirects)
+    
+    // Lance l'action serveur en arrière-plan
+    startTransition(async () => {
+      const formData = new FormData();
+      formData.append("campaignActionId", actionId);
+      await reserveTask(formData);
+    });
   };
 
   return (
-    <form action={reserveTask} onSubmit={handleSubmit}>
-      <input type="hidden" name="campaignActionId" value={actionId} />
-      <Button type="submit" className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/5">
-        Réaliser
-      </Button>
-    </form>
+    <Button 
+      onClick={handleClick}
+      disabled={isPending}
+      className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/5"
+    >
+      {isPending ? "Réservation..." : "Réaliser"}
+    </Button>
   );
 }
