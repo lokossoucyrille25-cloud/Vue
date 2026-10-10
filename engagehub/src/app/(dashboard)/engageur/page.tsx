@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { reserveTask, cleanExpiredTasks } from "./actions";
+import { ReserveTaskButton } from "./ReserveTaskButton";
 
 export default async function EngageurDashboard() {
   // Nettoyage lazy des tâches réservées depuis plus de 24h
@@ -102,12 +103,7 @@ export default async function EngageurDashboard() {
                   </CardContent>
                   <div className="p-6 pt-0 mt-auto">
                     {action ? (
-                      <form action={reserveTask}>
-                        <input type="hidden" name="campaignActionId" value={action.id} />
-                        <Button type="submit" className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/5">
-                          Réaliser
-                        </Button>
-                      </form>
+                      <ReserveTaskButton actionId={action.id} contentUrl={camp.content_url} />
                     ) : (
                       <Button disabled className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/5">
                         Aucune action
