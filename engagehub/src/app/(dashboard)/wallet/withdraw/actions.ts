@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { sendEmail } from "@/lib/email";
 
 export async function requestWithdrawal(formData: FormData) {
   const amount = Number(formData.get("amount"));
@@ -38,6 +39,30 @@ export async function requestWithdrawal(formData: FormData) {
   });
 
   if (txError) throw new Error("Erreur de création de la demande");
+
+  if (user.email) {
+    await sendEmail({
+      to: user.email,
+      subject: "Demande de retrait reçue - Boostify",
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px;">
+          <h2>Demande de retrait enregistrée</h2>
+          <p>Bonjour,</p>
+          <p>Nous avons bien reçu votre demande de retrait d'un montant de <strong>${amount} FCFA</strong>.</p>
+          <p>Notre équipe va traiter votre demande dans les plus brefs délais (généralement sous 24 à 48 heures).</p>
+          <br/>
+          <p>L'équipe Boostify</p>
+        </div>
+      `
+    });
+    
+    // Alert admin (can replace with actual admin email)
+    await sendEmail({
+      to: "admin@boostify.com",
+      subject: "Nouvelle demande de retrait",
+      html: `<p>L'utilisateur ${user.id} a demandé un retrait de ${amount} FCFA.</p>`
+    });
+  }
 
   revalidatePath("/wallet");
   redirect("/wallet");

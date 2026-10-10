@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
+import { FollowButton } from "./[id]/FollowButton";
 
 export default async function EngageurDirectoryPage() {
   const supabase = await createClient();
@@ -8,7 +9,7 @@ export default async function EngageurDirectoryPage() {
   // Fetch all visible client profiles
   const { data: clients } = await supabase
     .from("client_profiles")
-    .select("id, public_name, description, is_visible")
+    .select("id, client_id, public_name, description, is_visible")
     .eq("is_visible", true)
     .order("created_at", { ascending: false });
 
@@ -47,12 +48,14 @@ export default async function EngageurDirectoryPage() {
                   {client.description || "Aucune description fournie par ce client."}
                 </p>
                 <div className="flex gap-2">
-                  <Button className="flex-1 bg-white/10 hover:bg-white/20 text-white border-0">
-                    Voir Profil
-                  </Button>
-                  <Button variant="outline" className="flex-1 border-white/10 text-white hover:bg-brand-tiktok-pink/10 hover:text-brand-tiktok-pink hover:border-brand-tiktok-pink/30">
-                    S'abonner
-                  </Button>
+                  <a href={`/engageur/directory/${client.id}`} className="flex-1">
+                    <Button className="w-full bg-white/10 hover:bg-white/20 text-white border-0">
+                      Voir Profil
+                    </Button>
+                  </a>
+                  <div className="flex-1">
+                    <FollowButton clientId={client.client_id} />
+                  </div>
                 </div>
               </CardContent>
             </Card>
